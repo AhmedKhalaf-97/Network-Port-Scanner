@@ -27,7 +27,7 @@ def create_UDP_server(server_port):
         print(" A message received by the server. The message is: ", message.decode())
         resp = "PONG"
         if message.decode() == "message":
-            if random.random() < 0.5:
+            if random.random() < 0.7:
                 serverSocket.sendto(resp.encode(), clientAddress)
             else:
                 time.sleep(5)

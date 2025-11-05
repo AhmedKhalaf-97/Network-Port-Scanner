@@ -14,7 +14,7 @@ def port_scan_TCP_task(hostname, port):
             except Exception as e:
                 # OSError
                 port_service_name = "svc name unavail"
-            print("port", port, "open:", port_service_name)
+            print("port", port, "open   :", port_service_name)
         else:
             print("port", port, "closed")
     except Exception as e:
@@ -38,7 +38,7 @@ def port_scan_UDP_task(hostname, port):
             except Exception as e:
                 # OSError
                 port_service_name = "svc name unavail"
-            print("port", port, "open:", port_service_name)
+            print("port", port, "open   :", port_service_name)
         else:
             print("port", port, "closed")
     except Exception as e:
@@ -93,7 +93,9 @@ def main(argv):
             porthigh = int(sys.argv[4])
 
             if check_hostname(hostname) == False:
-                print(f"scanning host={hostname}")
+                print(
+                    f"scanning host={hostname}, protocol={protocol}, ports: {portlow} -> {porthigh} error: host {hostname} does not exist"
+                )
                 sys.exit(1)
 
             if protocol.upper() == "TCP":
@@ -103,13 +105,13 @@ def main(argv):
             else:
                 # The program will terminate if incorrect protocol.
                 print(
-                    "Usage: python3 portscan.py <hostname> <protocol> <portlow> <porthigh>"
+                    f'scanning host={hostname}, protocol={protocol}, ports: {portlow} -> {porthigh} invalid protocol: {protocol}. Specify "tcp" or "udp"'
                 )
                 sys.exit(1)
 
         except ValueError:
             print(
-                "Invalid input. Please enter valid inputs.\nUsage: python3 portscan.py <hostname> <protocol> <portlow> <porthigh>"
+                "Invalid port input.\nUsage: python3 portscan.py <hostname> <protocol> <portlow> <porthigh>"
             )
     else:
         # The program will terminate if it there is anything else other than 4 arguments.
