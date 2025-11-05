@@ -1,9 +1,8 @@
 import sys
-import threading
 from socket import *
 
 
-def port_scan_TCP_task(hostname, port):
+def port_scan_TCP(hostname, port):
     try:
         scanner_socket = socket(AF_INET, SOCK_STREAM)
         scanner_socket.settimeout(1)
@@ -24,7 +23,7 @@ def port_scan_TCP_task(hostname, port):
         scanner_socket.close()
 
 
-def port_scan_UDP_task(hostname, port):
+def port_scan_UDP(hostname, port):
     try:
         scanner_socket = socket(AF_INET, SOCK_DGRAM)
         scanner_socket.settimeout(1)
@@ -52,27 +51,10 @@ def port_scanner(hostname, protocol, portlow, porthigh):
     scanner_threads = list()
     for port in range(portlow, porthigh + 1):
         if protocol == "TCP":
-            scanner_t = threading.Thread(
-                target=port_scan_TCP_task,
-                args=(
-                    hostname,
-                    port,
-                ),
-            )
+            port_scan_TCP(hostname, port)
+
         elif protocol == "UDP":
-            scanner_t = threading.Thread(
-                target=port_scan_UDP_task,
-                args=(
-                    hostname,
-                    port,
-                ),
-            )
-
-        scanner_threads.append(scanner_t)
-        scanner_t.start()
-
-    for scanner_t in scanner_threads:
-        scanner_t.join()
+            port_scan_UDP(hostname, port)
 
 
 def check_hostname(hostname):
