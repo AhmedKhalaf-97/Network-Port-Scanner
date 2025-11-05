@@ -8,15 +8,44 @@ def port_scan_TCP_task(hostname, port):
         scanner_socket = socket(AF_INET, SOCK_STREAM)
         scanner_socket.settimeout(1)
         connection_status = scanner_socket.connect_ex((hostname, port))
-        print(connection_status)
+        if connection_status == 0:
+            try:
+                port_service_name = socket.getservbyport(port, "tcp")
+            except Exception as e:
+                # OSError
+                port_service_name = "svc name unavail"
+            print("port", port, "open:", port_service_name)
+        else:
+            print("port", port, "closed")
     except Exception as e:
-        print("Failed to connect" + port)
+        # timeout
+        print("port", port, "closed")
     finally:
         scanner_socket.close()
 
 
 def port_scan_UDP_task(hostname, port):
-    print("Scanning UDP port: ", port)
+    try:
+        scanner_socket = socket(AF_INET, SOCK_DGRAM)
+        scanner_socket.settimeout(1)
+
+        scanner_socket.sendto("message".encode(), (hostname, port))
+        pongMsg, server_address = scanner_socket.recvfrom(2048)
+
+        if pongMsg.decode() == "PONG":
+            try:
+                port_service_name = socket.getservbyport(port, "udp")
+            except Exception as e:
+                # OSError
+                port_service_name = "svc name unavail"
+            print("port", port, "open:", port_service_name)
+        else:
+            print("port", port, "closed")
+    except Exception as e:
+        # timeout
+        print("port", port, "closed")
+    finally:
+        scanner_socket.close()
 
 
 def port_scanner(hostname, protocol, portlow, porthigh):
@@ -46,6 +75,14 @@ def port_scanner(hostname, protocol, portlow, porthigh):
         scanner_t.join()
 
 
+def check_hostname(hostname):
+    try:
+        gethostbyname(hostname)
+        return True
+    except gaierror as e:
+        return False
+
+
 def main(argv):
     # The program will accept command-line arguments:
     if len(sys.argv) == 5:
@@ -54,6 +91,10 @@ def main(argv):
             protocol = str(sys.argv[2])
             portlow = int(sys.argv[3])
             porthigh = int(sys.argv[4])
+
+            if check_hostname(hostname) == False:
+                print(f"scanning host={hostname}")
+                sys.exit(1)
 
             if protocol.upper() == "TCP":
                 port_scanner(hostname, "TCP", portlow, porthigh)

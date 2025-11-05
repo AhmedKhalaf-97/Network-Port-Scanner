@@ -1,4 +1,6 @@
 import sys
+import time
+import random
 from socket import *
 
 
@@ -11,6 +13,8 @@ def create_TCP_server(server_port):
     while True:
         connectionSocket, addr = serverSocket.accept()
         msg = connectionSocket.recv(2048).decode()
+        # connectionSocket.send("PONG".encode())
+        # connectionSocket.close()
 
 
 def create_UDP_server(server_port):
@@ -23,7 +27,11 @@ def create_UDP_server(server_port):
         print(" A message received by the server. The message is: ", message.decode())
         resp = "PONG"
         if message.decode() == "message":
-            serverSocket.sendto(resp.encode(), clientAddress)
+            if random.random() < 0.5:
+                serverSocket.sendto(resp.encode(), clientAddress)
+            else:
+                time.sleep(5)
+                print("Packet loss - Message dropped.")
         else:
             print("No  message received")
 
