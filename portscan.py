@@ -15,13 +15,35 @@ def port_scan_TCP_task(hostname, port):
         scanner_socket.close()
 
 
-def port_scan_TCP(hostname, portlow, porthigh):
+def port_scan_UDP_task(hostname, port):
+    print("Scanning UDP port: ", port)
+
+
+def port_scanner(hostname, protocol, portlow, porthigh):
+    scanner_threads = list()
     for port in range(portlow, porthigh + 1):
-        port_scan_TCP_task(hostname, port)
+        if protocol == "TCP":
+            scanner_t = threading.Thread(
+                target=port_scan_TCP_task,
+                args=(
+                    hostname,
+                    port,
+                ),
+            )
+        elif protocol == "UDP":
+            scanner_t = threading.Thread(
+                target=port_scan_UDP_task,
+                args=(
+                    hostname,
+                    port,
+                ),
+            )
 
+        scanner_threads.append(scanner_t)
+        scanner_t.start()
 
-def port_scan_UDP(hostname, portlow, porthigh):
-    print("Scanning UDP ports...")
+    for scanner_t in scanner_threads:
+        scanner_t.join()
 
 
 def main(argv):
@@ -34,9 +56,9 @@ def main(argv):
             porthigh = int(sys.argv[4])
 
             if protocol.upper() == "TCP":
-                port_scan_TCP(hostname, portlow, porthigh)
+                port_scanner(hostname, "TCP", portlow, porthigh)
             elif protocol.upper() == "UDP":
-                port_scan_UDP(hostname, portlow, porthigh)
+                port_scanner(hostname, "UDP", portlow, porthigh)
             else:
                 # The program will terminate if incorrect protocol.
                 print(
