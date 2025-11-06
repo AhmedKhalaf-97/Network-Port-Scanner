@@ -9,7 +9,7 @@ def port_scan_TCP(hostname, port):
         connection_status = scanner_socket.connect_ex((hostname, port))
         if connection_status == 0:
             try:
-                port_service_name = socket.getservbyport(port, "tcp")
+                port_service_name = getservbyport(port, "tcp")
             except Exception as e:
                 # OSError
                 port_service_name = "svc name unavail"
@@ -33,7 +33,7 @@ def port_scan_UDP(hostname, port):
 
         if pongMsg.decode() == "PONG":
             try:
-                port_service_name = socket.getservbyport(port, "udp")
+                port_service_name = getservbyport(port, "udp")
             except Exception as e:
                 # OSError
                 port_service_name = "svc name unavail"
