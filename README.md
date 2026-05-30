@@ -104,14 +104,6 @@ If the user does not provide all required arguments, the program displays a usag
 usage: python3 portscan.py <hostname> <protocol> <portlow> <porthigh>
 ```
 
-## File Structure
-
-```text
-.
-├── portscan.py
-└── README.md
-```
-
 ## Requirements
 
 * Python 3 installed
