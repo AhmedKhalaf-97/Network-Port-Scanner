@@ -1,6 +1,5 @@
-# Network-Port-Scanner
-This is an assignment for a class: CSC138 Computer Network Fundamentals.
 # Network Port Scanner
+This is an assignment for a class: CSC138 Computer Network Fundamentals.
 
 A command-line network port scanner written in Python. This program scans a given host over a specified range of ports and reports whether each port is open or closed for either TCP or UDP.
 
